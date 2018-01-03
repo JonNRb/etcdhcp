@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"net"
 	"strings"
@@ -144,6 +145,23 @@ func (h *DHCPHandler) freeIP(ctx context.Context) (net.IP, error) {
 	}
 	ip := string(resp.Kvs[0].Value)
 	return parseIP4(ip), nil
+}
+
+func (h *DHCPHandler) recordClientInfo(ctx context.Context, nic string, info ClientInfo) error {
+	b, err := json.Marshal(info)
+	if err != nil {
+		return errors.Wrap(err, "could not record client info")
+	}
+
+	nicInfoKey := h.prefix + "nics::info::" + nic
+	kvc := etcd.NewKV(h.client)
+
+	_, err = kvc.Put(ctx, nicInfoKey, string(b))
+	if err != nil {
+		return errors.Wrap(err, "could not record client info")
+	}
+
+	return nil
 }
 
 func (h *DHCPHandler) leaseIP(ctx context.Context, ip net.IP, nic string, ttl time.Duration) error {

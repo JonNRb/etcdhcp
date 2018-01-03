@@ -50,12 +50,18 @@ func (h *DHCPHandler) ServeDHCP(p dhcp.Packet, msgType dhcp.MessageType, options
 			reqIP = net.IP(p.CIAddr())
 		}
 
-		ip, err := h.handleRequest(ctx, reqIP, p.CHAddr().String())
+		nic := p.CHAddr().String()
+		ip, err := h.handleRequest(ctx, reqIP, nic)
 		if err != nil {
 			glog.Errorf("could not lease: %v", err)
 			return dhcp.ReplyPacket(p, dhcp.NAK, h.ip, nil, 0, nil)
 		}
-		glog.Infof("leased %v to %v", reqIP, p.CHAddr().String())
+		opts := p.ParseOptions()
+		glog.V(2).Infof("client provided options %v", opts)
+		if h.recordClientInfo(ctx, nic, clientInfo(opts)) != nil {
+			glog.Warningf("error recording client options for %v", nic)
+		}
+		glog.Infof("leased %v to %v", reqIP, nic)
 		return dhcp.ReplyPacket(p, dhcp.ACK, h.ip, ip, h.leaseDuration,
 			h.options.SelectOrderOrAll(options[dhcp.OptionParameterRequestList]))
 
