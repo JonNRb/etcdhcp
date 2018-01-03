@@ -20,6 +20,7 @@ fi
 
 /go/bin/etcdhcp                                           \
   -etcd.discovery.endpoints "${ETCD_DISCOVERY_ENDPOINTS}" \
+  -etcd.prefix              "${ETCD_PREFIX}"              \
   -dhcp.router              "${DHCP_ROUTER}"              \
   -dhcp.dns                 "${DHCP_DNS}"                 \
   -dhcp.server-if           "${DHCP_SERVER_IF}"           \
