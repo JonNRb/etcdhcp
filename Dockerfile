@@ -1,11 +1,20 @@
-from golang:alpine
+from golang:1.9 as build
 
-run apk update && apk add git docker
-add . /go/src/github.com/jonnrb/etcdhcp
-run cd /go/src/github.com/jonnrb/etcdhcp \
- && go get -u github.com/golang/dep/cmd/dep \
- && dep ensure \
- && go install
+workdir /go/src/github.com/jonnrb/etcdhcp
+add . .
+
+env CGO_ENABLED 0
+env GOOS linux
+
+run go-wrapper download
+run go-wrapper install
+
+run go get github.com/docker/cli/cmd/docker
+
+from alpine
+
+copy --from=build /go/bin/etcdhcp /etcdhcp
+copy --from=build /go/bin/docker /docker
 
 add entrypoint.sh /entrypoint.sh
 
