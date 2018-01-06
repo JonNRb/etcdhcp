@@ -10,7 +10,14 @@
 [[projects]]
   branch = "master"
   name = "github.com/coreos/etcd"
-  packages = ["auth/authpb","clientv3","etcdserver/api/v3rpc/rpctypes","etcdserver/etcdserverpb","mvcc/mvccpb"]
+  packages = [
+    "auth/authpb",
+    "clientv3",
+    "clientv3/clientv3util",
+    "etcdserver/api/v3rpc/rpctypes",
+    "etcdserver/etcdserverpb",
+    "mvcc/mvccpb"
+  ]
   revision = "9ce7bb6a1c15bcffdd011a571dc686e71aabc314"
 
 [[projects]]
@@ -22,7 +29,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
-  packages = ["proto","ptypes/any"]
+  packages = [
+    "proto",
+    "ptypes/any"
+  ]
   revision = "0a4f71a498b7c4812f64969510bcb4eca251e33a"
 
 [[projects]]
@@ -45,7 +55,10 @@
 
 [[projects]]
   name = "github.com/prometheus/client_golang"
-  packages = ["prometheus","prometheus/promhttp"]
+  packages = [
+    "prometheus",
+    "prometheus/promhttp"
+  ]
   revision = "c5b7fccd204277076155f10851dad72b76a49317"
   version = "v0.8.0"
 
@@ -58,19 +71,38 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
   revision = "3e6a7635bac6573d43f49f97b47eb9bda195dba8"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [".","xfs"]
+  packages = [
+    ".",
+    "xfs"
+  ]
   revision = "e645f4e5aaa8506fc71d6edbc5c4ff02c04c46f2"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["bpf","context","http2","http2/hpack","idna","internal/iana","internal/socket","internal/timeseries","ipv4","lex/httplex","trace"]
+  packages = [
+    "bpf",
+    "context",
+    "http2",
+    "http2/hpack",
+    "idna",
+    "internal/iana",
+    "internal/socket",
+    "internal/timeseries",
+    "ipv4",
+    "lex/httplex",
+    "trace"
+  ]
   revision = "b3756b4b77d7b13260a0a2ec658753cf48922eac"
 
 [[projects]]
@@ -82,7 +114,17 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  packages = [
+    "internal/gen",
+    "internal/triegen",
+    "internal/ucd",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable"
+  ]
   revision = "836efe42bb4aa16aaa17b9c155d8813d336ed720"
 
 [[projects]]
@@ -93,13 +135,28 @@
 
 [[projects]]
   name = "google.golang.org/grpc"
-  packages = [".","codes","credentials","grpclb/grpc_lb_v1","grpclog","internal","keepalive","metadata","naming","peer","stats","status","tap","transport"]
+  packages = [
+    ".",
+    "codes",
+    "credentials",
+    "grpclb/grpc_lb_v1",
+    "grpclog",
+    "internal",
+    "keepalive",
+    "metadata",
+    "naming",
+    "peer",
+    "stats",
+    "status",
+    "tap",
+    "transport"
+  ]
   revision = "b15215fb911b24a5d61d57feec4233d610530464"
   version = "v1.4.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8b2bcce0943c4c2ad7c85e8f939d84b4d1b4ae56c3728451159a65430e670f50"
+  inputs-digest = "b7fb3f917589f3b37edc979f9fc86ef1776979aec856498bfc1d60ff3809689d"
   solver-name = "gps-cdcl"
   solver-version = 1

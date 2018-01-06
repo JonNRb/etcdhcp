@@ -2,18 +2,13 @@ package main
 
 import (
 	dhcp "github.com/krolaw/dhcp4"
+
+	pb "github.com/jonnrb/etcdhcp/proto"
 )
 
-type ClientInfo struct {
-	Hostname    string
-	VendorClass string
-}
-
-func clientInfo(opts dhcp.Options) ClientInfo {
-	var client ClientInfo
-
-	client.Hostname = string(opts[dhcp.OptionHostName])
-	client.VendorClass = string(opts[dhcp.OptionVendorClassIdentifier])
-
-	return client
+func clientInfo(opts dhcp.Options) *pb.ClientInfo {
+	return &pb.ClientInfo{
+		Hostname:    string(opts[dhcp.OptionHostName]),
+		VendorClass: string(opts[dhcp.OptionVendorClassIdentifier]),
+	}
 }

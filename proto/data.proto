@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message ClientInfo {
+  string hostname = 1;
+  string vendor_class = 2;
+}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"net"
 	"strings"
@@ -12,8 +11,11 @@ import (
 	etcdutil "github.com/coreos/etcd/clientv3/clientv3util"
 	etcdpb "github.com/coreos/etcd/etcdserver/etcdserverpb"
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/proto"
 	dhcp "github.com/krolaw/dhcp4"
 	"github.com/pkg/errors"
+
+	pb "github.com/jonnrb/etcdhcp/proto"
 )
 
 var (
@@ -147,8 +149,8 @@ func (h *DHCPHandler) freeIP(ctx context.Context) (net.IP, error) {
 	return parseIP4(ip), nil
 }
 
-func (h *DHCPHandler) recordClientInfo(ctx context.Context, nic string, info ClientInfo) error {
-	b, err := json.Marshal(info)
+func (h *DHCPHandler) recordClientInfo(ctx context.Context, nic string, info *pb.ClientInfo) error {
+	b, err := proto.Marshal(info)
 	if err != nil {
 		return errors.Wrap(err, "could not record client info")
 	}
