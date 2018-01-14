@@ -32,7 +32,6 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	flag.Set("logtostderr", "true")
 	flag.Parse()
 
 	etcd, err := NewETCDStore(ctx)
@@ -46,12 +45,21 @@ func main() {
 		leaseDuration: *leaseDuration,
 		start:         parseIP4(*issueFrom),
 		end:           parseIP4(*issueTo),
+		iface:         *serverIF,
 		ip:            parseIP4(*serverIP),
 		options: dhcp.Options{
 			dhcp.OptionSubnetMask:       parseIP4(*subnetMask),
 			dhcp.OptionRouter:           parseIP4(*router),
 			dhcp.OptionDomainNameServer: parseIP4(*dns),
 		},
+	}
+
+	did, err := maybeInitFromContainerEnvironment(ctx, handler)
+	if err != nil {
+		glog.Exitf("error loading dhcp settings from container environment: %v", err)
+	}
+	if did {
+		glog.Info("loaded dhcp settings from container environment")
 	}
 
 	err = handler.bootstrapLeasableRange(ctx)
@@ -70,7 +78,7 @@ func main() {
 
 	grp.Go(func() error {
 		glog.Infof("starting dhcp listener")
-		err := dhcp.ListenAndServeIf(*serverIF, handler)
+		err := dhcp.ListenAndServeIf(handler.iface, handler)
 		return errors.Wrap(err, "could not listen to dhcp")
 	})
 

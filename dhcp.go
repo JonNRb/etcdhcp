@@ -16,6 +16,7 @@ type DHCPHandler struct {
 	prefix  string
 	timeout time.Duration
 
+	iface         string
 	ip            net.IP
 	options       dhcp.Options
 	start         net.IP
