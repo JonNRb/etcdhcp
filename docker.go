@@ -123,5 +123,7 @@ func cidrToMask(prefix int) net.IP {
 	b := maskSingle(prefix - 8)
 	c := maskSingle(prefix - 16)
 	d := maskSingle(prefix - 24)
-	return net.IPv4(a, b, c, d)
+
+	// TODO(jonnrb): get rid of `parseIP4()`
+	return parseIP4(fmt.Sprintf("%d.%d.%d.%d", a, b, c, d))
 }
