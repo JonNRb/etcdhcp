@@ -1,6 +1,6 @@
 from golang:1.9 as build
-add . /go/src/github.com/jonnrb/etcdhcp
-run cd /go/src/github.com/jonnrb/etcdhcp \
+add . /go/src/go.jonnrb.io/etcdhcp
+run cd /go/src/go.jonnrb.io/etcdhcp \
  && CGO_ENABLED=0 GOOS=linux go-wrapper download \
  && CGO_ENABLED=0 GOOS=linux go-wrapper install
 

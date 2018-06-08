@@ -3,7 +3,7 @@ package main
 import (
 	dhcp "github.com/krolaw/dhcp4"
 
-	pb "github.com/jonnrb/etcdhcp/proto"
+	pb "go.jonnrb.io/etcdhcp/proto"
 )
 
 func clientInfo(opts dhcp.Options) *pb.ClientInfo {

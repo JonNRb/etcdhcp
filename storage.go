@@ -15,7 +15,7 @@ import (
 	dhcp "github.com/krolaw/dhcp4"
 	"github.com/pkg/errors"
 
-	pb "github.com/jonnrb/etcdhcp/proto"
+	pb "go.jonnrb.io/etcdhcp/proto"
 )
 
 var (
