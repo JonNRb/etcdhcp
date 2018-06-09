@@ -1,4 +1,4 @@
-# etcDHCP
+# etcDHCP [![Build Status](https://drone.jonnrb.com/api/badges/jon/etcdhcp/status.svg?branch=master)](https://drone.jonnrb.com/jon/etcdhcp)
 
 Ever wondered what was going on with your DHCP leases? Not comfortable looking
 at `/var/lib/dhcp/dhcp.leases`? Feel like your DHCP should be a bit higher
