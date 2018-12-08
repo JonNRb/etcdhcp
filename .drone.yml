@@ -1,11 +1,19 @@
+---
 type: pipeline
 name: default
+
+platform:
+  os: linux
+  arch: amd64
+
 steps:
 - name: docker
   image: plugins/docker
   settings:
+    password:
+      from_secret: docker_password
     repo: jonnrb/etcdhcp
     username:
       from_secret: docker_username
-    password:
-      from_secret: docker_password
+
+...
