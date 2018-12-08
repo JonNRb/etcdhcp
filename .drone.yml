@@ -1,7 +1,7 @@
 type: pipeline
 name: default
 steps:
-- docker:
+- name: docker
   image: plugins/docker
   settings:
     repo: jonnrb/etcdhcp
