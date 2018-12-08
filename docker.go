@@ -7,7 +7,6 @@ import (
 	"net"
 	"os"
 
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/golang/glog"
 	dhcp "github.com/krolaw/dhcp4"
@@ -58,7 +57,7 @@ func maybeInitFromContainerEnvironment(ctx context.Context, handler *DHCPHandler
 	handler.options[dhcp.OptionSubnetMask] = cidrToMask(epInfo.IPPrefixLen)
 	handler.options[dhcp.OptionRouter] = parseIP4(epInfo.Gateway)
 
-	networkJSON, err := cli.NetworkInspect(ctx, epInfo.NetworkID, types.NetworkInspectOptions{})
+	networkJSON, err := cli.NetworkInspect(ctx, epInfo.NetworkID)
 	if err != nil {
 		return false, err
 	}
