@@ -1,6 +1,11 @@
-pipeline:
-  docker:
-    image: plugins/docker
+type: pipeline
+name: default
+steps:
+- docker:
+  image: plugins/docker
+  settings:
     repo: jonnrb/etcdhcp
-    storage_driver: overlay2
-    secrets: [ docker_username, docker_password ]
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
