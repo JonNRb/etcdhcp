@@ -16,4 +16,14 @@ steps:
     username:
       from_secret: docker_username
 
+- name: trigger
+  image: plugins/downstream
+  settings:
+    server: https://drone.jonnrb.com
+    fork: true
+    repositories:
+    - jon/wifi_dash
+    token:
+      from_secret: drone_token
+
 ...
