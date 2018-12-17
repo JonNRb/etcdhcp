@@ -1,4 +1,4 @@
-from golang:1.11.2 as build
+from quay.io/jonnrb/go as build
 add . /src
 run cd /src && CGO_ENABLED=0 GOOS=linux go get -v .
 
