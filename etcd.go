@@ -45,9 +45,18 @@ func NewETCDStore(ctx context.Context) (*etcd.Client, error) {
 	}
 
 	go func() {
-		for ctx.Err() == nil {
+		t := time.NewTicker(60 * time.Second)
+		defer t.Stop()
+
+		for {
+			select {
+			case <-t.C:
+			case <-ctx.Done():
+				return
+			}
+
 			func() {
-				ctx, cancel := context.WithTimeout(ctx, time.Second*30)
+				ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 				defer cancel()
 
 				err := client.Sync(ctx)
@@ -57,11 +66,6 @@ func NewETCDStore(ctx context.Context) (*etcd.Client, error) {
 					glog.V(4).Infof("synced etcd endpoint list")
 				}
 			}()
-
-			select {
-			case <-time.After(time.Second * 60):
-			case <-ctx.Done():
-			}
 		}
 	}()
 
