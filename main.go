@@ -54,7 +54,7 @@ func main() {
 		},
 	}
 
-	did, err := maybeInitFromContainerEnvironment(ctx, handler)
+	did, err := maybeInitFromDockerEnvironment(ctx, handler)
 	if err != nil {
 		glog.Exitf("error loading dhcp settings from container environment: %v", err)
 	}

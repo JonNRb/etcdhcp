@@ -16,7 +16,7 @@ var (
 	dockerNetwork = flag.String("docker.dhcp_network", "", "Container network to run the DHCP server on (this network should have appropriate labels set)")
 )
 
-func maybeInitFromContainerEnvironment(ctx context.Context, handler *DHCPHandler) (bool, error) {
+func maybeInitFromDockerEnvironment(ctx context.Context, handler *DHCPHandler) (bool, error) {
 	if *dockerNetwork == "" {
 		return false, nil
 	}
