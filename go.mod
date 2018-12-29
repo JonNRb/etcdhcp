@@ -6,8 +6,6 @@ require (
 	github.com/Microsoft/go-winio v0.4.5 // indirect
 	github.com/containernetworking/cni v0.6.0
 	github.com/containernetworking/plugins v0.7.4
-	github.com/coreos/bbolt v1.3.1-coreos.6 // indirect
-	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/coreos/go-iptables v0.4.0 // indirect
 	github.com/coreos/go-systemd v0.0.0-20181031085051-9002847aa142 // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
@@ -38,7 +36,6 @@ require (
 	github.com/sirupsen/logrus v1.2.0 // indirect
 	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20171017195756-830351dc03c6 // indirect
-	github.com/ugorji/go/codec v0.0.0-20181206144755-e72634d4d386 // indirect
 	github.com/vishvananda/netlink v1.0.0 // indirect
 	github.com/vishvananda/netns v0.0.0-20180720170159-13995c7128cc // indirect
 	go.etcd.io/etcd v0.0.0-20181228175106-cc8d446a6ec3
