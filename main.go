@@ -54,7 +54,12 @@ func main() {
 		},
 	}
 
-	did, err := maybeInitFromDockerEnvironment(ctx, handler)
+	var did bool
+	if inK8sCluster() {
+		did, err = maybeInitFromKubernetesEnvironment(ctx, handler)
+	} else {
+		did, err = maybeInitFromDockerEnvironment(ctx, handler)
+	}
 	if err != nil {
 		glog.Exitf("error loading dhcp settings from container environment: %v", err)
 	}
