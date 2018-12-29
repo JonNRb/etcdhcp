@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	etcd "github.com/coreos/etcd/clientv3"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
+	etcd "go.etcd.io/etcd/clientv3"
 )
 
 var (

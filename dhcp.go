@@ -5,7 +5,7 @@ import (
 	"net"
 	"time"
 
-	etcd "github.com/coreos/etcd/clientv3"
+	etcd "go.etcd.io/etcd/clientv3"
 	"github.com/golang/glog"
 	dhcp "github.com/krolaw/dhcp4"
 	"github.com/pkg/errors"

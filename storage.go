@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	etcd "github.com/coreos/etcd/clientv3"
-	etcdutil "github.com/coreos/etcd/clientv3/clientv3util"
-	etcdpb "github.com/coreos/etcd/etcdserver/etcdserverpb"
+	etcd "go.etcd.io/etcd/clientv3"
+	etcdutil "go.etcd.io/etcd/clientv3/clientv3util"
+	etcdpb "go.etcd.io/etcd/etcdserver/etcdserverpb"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	dhcp "github.com/krolaw/dhcp4"
