@@ -19,11 +19,21 @@ steps:
 - name: trigger
   image: plugins/downstream
   settings:
-    server: https://drone.jonnrb.com
     fork: true
     repositories:
     - jon/wifi_dash
+    server: https://drone.jonnrb.com
     token:
       from_secret: drone_token
+
+- name: notify-slack
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: slack_webhook
+  when:
+    status:
+    - success
+    - failure
 
 ...
