@@ -37,7 +37,8 @@ func (c *ConflictDetector) WouldConflict(ctx context.Context, ip net.IP, mac net
 	defer c.mu.Unlock()
 
 	c.setDeadline(ctx)
-	return !bytes.Equal(mac, c.resolveOrNil(ip))
+	existing := c.resolveOrNil(ip)
+	return existing == nil || !bytes.Equal(mac, existing)
 }
 
 func (c *ConflictDetector) setDeadline(ctx context.Context) {
