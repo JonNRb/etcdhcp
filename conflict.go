@@ -6,6 +6,7 @@ import (
 	"net"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/mdlayher/arp"
@@ -14,10 +15,11 @@ import (
 type ConflictDetector struct {
 	c        *arp.Client
 	detected map[string]net.HardwareAddr
+	timeout  time.Duration
 	mu       sync.Mutex
 }
 
-func newConflictDetector(iface string) (*ConflictDetector, error) {
+func newConflictDetector(iface string, timeout time.Duration) (*ConflictDetector, error) {
 	i, err := net.InterfaceByName(iface)
 	if err != nil {
 		return nil, err
@@ -28,6 +30,7 @@ func newConflictDetector(iface string) (*ConflictDetector, error) {
 	}
 	return &ConflictDetector{
 		c:        c,
+		timeout:  timeout,
 		detected: make(map[string]net.HardwareAddr),
 	}, nil
 }
@@ -43,6 +46,9 @@ func (c *ConflictDetector) WouldConflict(ctx context.Context, ip net.IP, mac net
 
 func (c *ConflictDetector) setDeadline(ctx context.Context) {
 	d, _ := ctx.Deadline()
+	if max := time.Now().Add(c.timeout); max.Before(d) {
+		d = max
+	}
 	c.c.SetDeadline(d)
 }
 

@@ -109,20 +109,6 @@ func (h *DHCPHandler) wouldConflict(ctx context.Context, nic string, ip net.IP) 
 		return false
 	}
 
-	d, ok := ctx.Deadline()
-	to := d.Sub(time.Now())
-	if ok {
-		to = to / 4
-	} else {
-		to = 2 * time.Second
-	}
-	if to < 0 {
-		glog.Warning("conflict detection deadline exceeded")
-		return false
-	}
-	ctx, cancel := context.WithTimeout(ctx, to)
-	defer cancel()
-
 	mac, err := net.ParseMAC(nic)
 	if err != nil {
 		glog.Fatalf("could not parse MAC that we String()'d ourselves %q: %v", nic, err)
