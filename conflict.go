@@ -38,7 +38,7 @@ func (c *ConflictDetector) WouldConflict(ctx context.Context, ip net.IP, mac net
 
 	c.setDeadline(ctx)
 	existing := c.resolveOrNil(ip)
-	return existing == nil || !bytes.Equal(mac, existing)
+	return existing != nil && !bytes.Equal(mac, existing)
 }
 
 func (c *ConflictDetector) setDeadline(ctx context.Context) {
