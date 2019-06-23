@@ -25,7 +25,7 @@ var (
 	issueFrom        = flag.String("dhcp.issue-from", "10.0.0.10", "first ip address to issue to clients")
 	issueTo          = flag.String("dhcp.issue-to", "10.0.0.100", "last ip address to issue to clients")
 	leaseDuration    = flag.Duration("dhcp.lease", time.Hour, "dhcp lease duration")
-	requestTimeout   = flag.Duration("dhcp.request-timeout", 200*time.Millisecond*200, "dhcp request processing timeout")
+	requestTimeout   = flag.Duration("dhcp.request-timeout", 500*time.Millisecond, "dhcp request processing timeout")
 	resolveConflicts = flag.Bool("dhcp.resolve-conflicts", false, "attempt to resolve conflicts by arpinging an address before leasing it")
 )
 
