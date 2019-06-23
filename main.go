@@ -16,16 +16,17 @@ import (
 )
 
 var (
-	adminAddr      = flag.String("admin-addr", ":9842", "address to serve admin interface on")
-	serverIP       = flag.String("dhcp.server-ip", "10.0.0.1", "dhcp server ip")
-	serverIF       = flag.String("dhcp.server-if", "eth0", "interface to serve on")
-	subnetMask     = flag.String("dhcp.subnet-mask", "255.255.240.0", "the subnet to serve")
-	router         = flag.String("dhcp.router", "10.0.0.1", "gateway to point clients to")
-	dns            = flag.String("dhcp.dns", "10.0.0.1", "dns server to point clients to")
-	issueFrom      = flag.String("dhcp.issue-from", "10.0.0.10", "first ip address to issue to clients")
-	issueTo        = flag.String("dhcp.issue-to", "10.0.0.100", "last ip address to issue to clients")
-	leaseDuration  = flag.Duration("dhcp.lease", time.Hour, "dhcp lease duration")
-	requestTimeout = flag.Duration("dhcp.request-timeout", 200*time.Millisecond*200, "dhcp request processing timeout")
+	adminAddr        = flag.String("admin-addr", ":9842", "address to serve admin interface on")
+	serverIP         = flag.String("dhcp.server-ip", "10.0.0.1", "dhcp server ip")
+	serverIF         = flag.String("dhcp.server-if", "eth0", "interface to serve on")
+	subnetMask       = flag.String("dhcp.subnet-mask", "255.255.240.0", "the subnet to serve")
+	router           = flag.String("dhcp.router", "10.0.0.1", "gateway to point clients to")
+	dns              = flag.String("dhcp.dns", "10.0.0.1", "dns server to point clients to")
+	issueFrom        = flag.String("dhcp.issue-from", "10.0.0.10", "first ip address to issue to clients")
+	issueTo          = flag.String("dhcp.issue-to", "10.0.0.100", "last ip address to issue to clients")
+	leaseDuration    = flag.Duration("dhcp.lease", time.Hour, "dhcp lease duration")
+	requestTimeout   = flag.Duration("dhcp.request-timeout", 200*time.Millisecond*200, "dhcp request processing timeout")
+	resolveConflicts = flag.Bool("dhcp.resolve-conflicts", false, "attempt to resolve conflicts by arpinging an address before leasing it")
 )
 
 func main() {
@@ -65,6 +66,13 @@ func main() {
 	}
 	if did {
 		glog.Info("loaded dhcp settings from container environment")
+	}
+
+	if *resolveConflicts {
+		handler.conflictDetector, err = newConflictDetector(handler.iface)
+		if err != nil {
+			glog.Fatalf("error setting up conflict detection: %v", err)
+		}
 	}
 
 	err = handler.bootstrapLeasableRange(ctx)

@@ -7,13 +7,13 @@ import (
 	"strings"
 	"time"
 
-	etcd "go.etcd.io/etcd/clientv3"
-	etcdutil "go.etcd.io/etcd/clientv3/clientv3util"
-	etcdpb "go.etcd.io/etcd/etcdserver/etcdserverpb"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	dhcp "github.com/krolaw/dhcp4"
 	"github.com/pkg/errors"
+	etcd "go.etcd.io/etcd/clientv3"
+	etcdutil "go.etcd.io/etcd/clientv3/clientv3util"
+	etcdpb "go.etcd.io/etcd/etcdserver/etcdserverpb"
 
 	pb "go.jonnrb.io/etcdhcp/proto"
 )
@@ -134,7 +134,7 @@ func (h *DHCPHandler) nicLeasedIP(ctx context.Context, nic string) (net.IP, erro
 	return parseIP4(string(resp.Kvs[0].Value)), nil
 }
 
-func (h *DHCPHandler) freeIP(ctx context.Context) (net.IP, error) {
+func (h *DHCPHandler) freeIP(ctx context.Context, filter []net.IP) (net.IP, error) {
 	kvc := etcd.NewKV(h.client)
 	prefix := h.prefix + "ips::free::"
 	glog.V(2).Infof("GET PREFIX(%v)", prefix)
@@ -142,11 +142,21 @@ func (h *DHCPHandler) freeIP(ctx context.Context) (net.IP, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get etcd key")
 	}
-	if len(resp.Kvs) == 0 {
-		return nil, errors.New("no free IP addresses")
+
+	filterMap := make(map[string]struct{})
+	for _, f := range filter {
+		filterMap[f.String()] = struct{}{}
 	}
-	ip := string(resp.Kvs[0].Value)
-	return parseIP4(ip), nil
+
+	for _, r := range resp.Kvs {
+		ip := parseIP4(string(r.Value))
+		if _, pass := filterMap[ip.String()]; pass {
+			continue
+		}
+		return ip, nil
+	}
+
+	return nil, errors.New("no free IP addresses")
 }
 
 func (h *DHCPHandler) recordClientInfo(ctx context.Context, nic string, info *pb.ClientInfo) error {

@@ -24,6 +24,7 @@ require (
 	github.com/json-iterator/go v1.1.5 // indirect
 	github.com/k8snetworkplumbingwg/network-attachment-definition-client v0.0.0-20181121151021-386d141f4c94 // indirect
 	github.com/krolaw/dhcp4 v0.0.0-20161023043050-f61f734b7302
+	github.com/mdlayher/arp v0.0.0-20190313224443-98a83c8a2717
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/onsi/ginkgo v1.7.0 // indirect
@@ -39,7 +40,6 @@ require (
 	github.com/vishvananda/netlink v1.0.0 // indirect
 	github.com/vishvananda/netns v0.0.0-20180720170159-13995c7128cc // indirect
 	go.etcd.io/etcd v0.0.0-20181228175106-cc8d446a6ec3
-	golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9 // indirect
 	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f
 	golang.org/x/time v0.0.0-20181108054448-85acf8d2951c // indirect
 	google.golang.org/grpc v1.17.0 // indirect

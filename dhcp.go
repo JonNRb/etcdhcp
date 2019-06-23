@@ -5,10 +5,10 @@ import (
 	"net"
 	"time"
 
-	etcd "go.etcd.io/etcd/clientv3"
 	"github.com/golang/glog"
 	dhcp "github.com/krolaw/dhcp4"
 	"github.com/pkg/errors"
+	etcd "go.etcd.io/etcd/clientv3"
 )
 
 type DHCPHandler struct {
@@ -22,6 +22,8 @@ type DHCPHandler struct {
 	start         net.IP
 	end           net.IP
 	leaseDuration time.Duration
+
+	conflictDetector *ConflictDetector
 }
 
 func (h *DHCPHandler) ServeDHCP(p dhcp.Packet, msgType dhcp.MessageType, options dhcp.Options) dhcp.Packet {
@@ -76,19 +78,56 @@ func (h *DHCPHandler) ServeDHCP(p dhcp.Packet, msgType dhcp.MessageType, options
 }
 
 func (h *DHCPHandler) handleDiscover(ctx context.Context, nic string) (net.IP, error) {
-	leased, err := h.nicLeasedIP(ctx, nic)
+	ip, err := h.nicLeasedIP(ctx, nic)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not lookup existing nic lease")
 	}
-	if leased != nil {
-		glog.Infof("found previous lease for %v", nic)
-		return leased, nil
+	var filter []net.IP
+	if ip != nil {
+		if h.wouldConflict(ctx, nic, ip) {
+			filter = append(filter, ip)
+		} else {
+			glog.Infof("found previous lease for %v", nic)
+			return ip, nil
+		}
 	}
-	new, err := h.freeIP(ctx)
+	for {
+		ip, err = h.freeIP(ctx, filter)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not find next free ip")
+		}
+		if h.wouldConflict(ctx, nic, ip) {
+			filter = append(filter, ip)
+			continue
+		}
+		return ip, nil
+	}
+}
+
+func (h *DHCPHandler) wouldConflict(ctx context.Context, nic string, ip net.IP) bool {
+	if h.conflictDetector == nil {
+		return false
+	}
+
+	d, ok := ctx.Deadline()
+	to := d.Sub(time.Now())
+	if ok {
+		to = to / 4
+	} else {
+		to = 2 * time.Second
+	}
+	if to < 0 {
+		glog.Warning("conflict detection deadline exceeded")
+		return false
+	}
+	ctx, cancel := context.WithTimeout(ctx, to)
+	defer cancel()
+
+	mac, err := net.ParseMAC(nic)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not find next free ip")
+		glog.Fatalf("could not parse MAC that we String()'d ourselves %q: %v", nic, err)
 	}
-	return new, nil
+	return h.conflictDetector.WouldConflict(ctx, ip, mac)
 }
 
 func (h *DHCPHandler) handleRequest(ctx context.Context, ip net.IP, nic string) (net.IP, error) {
