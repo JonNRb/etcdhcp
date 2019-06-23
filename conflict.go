@@ -5,6 +5,7 @@ import (
 	"context"
 	"net"
 	"sync"
+	"syscall"
 
 	"github.com/golang/glog"
 	"github.com/mdlayher/arp"
@@ -44,11 +45,16 @@ func (c *ConflictDetector) setDeadline(ctx context.Context) {
 	c.c.SetDeadline(d)
 }
 
-func (c *ConflictDetector) resolveOrNil(ip net.IP) (mac net.HardwareAddr) {
-	var err error
-	mac, err = c.c.Resolve(ip)
-	if err != nil {
-		glog.Warningf("Could not resolve %q. This may result in a conflict! Err: %v", ip, err)
+func (c *ConflictDetector) resolveOrNil(ip net.IP) net.HardwareAddr {
+	mac, err := c.c.Resolve(ip)
+
+	switch err {
+	case nil:
+		return mac
+	case syscall.EAGAIN:
+		return nil
+	default:
+		glog.Warningf("error resolving %q: %v", ip, err)
+		return nil
 	}
-	return
 }
