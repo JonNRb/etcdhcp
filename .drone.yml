@@ -1,5 +1,5 @@
 ---
-type: pipeline
+kind: pipeline
 name: default
 
 platform:
