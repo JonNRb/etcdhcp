@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -72,10 +73,35 @@ func maybeInitFromKubernetesEnvironment(ctx context.Context, handler *DHCPHandle
 	}
 	handler.options[dhcp.OptionDomainNameServer] = parseIP4(dns)
 
-	ipamCfg, _, err := allocator.LoadIPAMConfig([]byte(cniNet.Spec.Config), "")
-	if err != nil {
-		glog.Errorf("bad CNI config from k8s API server: %q", cniNet.Spec.Config)
-		return false, fmt.Errorf("error parsing CNI config (the IPAM bit): %v", err)
+	var ipamCfg *allocator.IPAMConfig
+
+	type pluginChain struct {
+		Plugins []interface{} `json:"plugins"`
+	}
+	var pc pluginChain
+	json.Unmarshal([]byte(cniNet.Spec.Config), &pc)
+	if len(pc.Plugins) != 0 {
+		for _, p := range pc.Plugins {
+			raw, err := json.Marshal(p)
+			if err != nil {
+				return false, fmt.Errorf("error marshaling unmarshaled data: %w", err)
+			}
+			ipamCfg, _, err = allocator.LoadIPAMConfig(raw, "")
+			if err == nil {
+				break
+			}
+		}
+
+		if err != nil {
+			return false, fmt.Errorf("error parsing CNI config (the IPAM bit): %v", err)
+		}
+	} else {
+		var err error
+		ipamCfg, _, err = allocator.LoadIPAMConfig([]byte(cniNet.Spec.Config), "")
+		if err != nil {
+			glog.Errorf("bad CNI config from k8s API server: %q", cniNet.Spec.Config)
+			return false, fmt.Errorf("error parsing CNI config (the IPAM bit): %v", err)
+		}
 	}
 
 	r, ok := firstRange(ipamCfg)
