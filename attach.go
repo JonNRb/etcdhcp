@@ -33,14 +33,17 @@ type Attachment struct {
 //
 // [1] https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/
 //
-func getAttachment(net string) (attachment Attachment, err error) {
+func getAttachment(ns, net string) (attachment Attachment, err error) {
 	var attachments []Attachment
 	attachments, err = getAttachmentsInternal("/etc/podinfo/attachments")
 	if err != nil {
 		return
 	}
 	for _, a := range attachments {
-		if a.Name == net {
+		// Multus used to just put the network name here with no namespace info.
+		// This changed at some point, so we search for both to maintain
+		// backward compatibility.
+		if a.Name == net || a.Name == ns+"/"+net {
 			attachment = a
 			return
 		}

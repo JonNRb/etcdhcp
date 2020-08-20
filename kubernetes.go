@@ -42,7 +42,7 @@ func maybeInitFromKubernetesEnvironment(ctx context.Context, handler *DHCPHandle
 	}
 	glog.V(2).Infof("getting configuration for CNI network %q", namespace+"/"+network)
 
-	attachment, err := getAttachment(network)
+	attachment, err := getAttachment(namespace, network)
 	if err != nil {
 		return false, err
 	}
